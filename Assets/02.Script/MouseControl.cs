@@ -19,7 +19,8 @@ public class MouseControl : MonoBehaviour
     private Vector3 dragOffset;
     
     private float z;
-    
+
+    [SerializeField] private float limitDistance =10f;
     [SerializeField] private float power = 30f;
     [SerializeField] private float rotationPower = 100f;
     [SerializeField] private Transform deadZone;
@@ -57,7 +58,12 @@ public class MouseControl : MonoBehaviour
     {
         line.enabled = true;
         dragOffset = startPosition - GetMousePos();
-        line.SetPosition(1,startSpot.position - dragOffset); 
+        
+        if (!LimitMouse())
+        {
+            line.SetPosition(1,startSpot.position - dragOffset);
+        }
+        
     }
     
     private void OnMouseUp()
@@ -79,5 +85,19 @@ public class MouseControl : MonoBehaviour
         // 마우스의 위치값 가져오기
         mousePos.z = 0; 
         return mousePos; // 마우스 위치값 반환 
+    }
+
+    private bool LimitMouse()
+    {
+        bool limit = false;
+        
+        float limitDistance =Vector2.Distance(startSpot.position - dragOffset, startSpot.position);
+
+        if (limitDistance > this.limitDistance)
+        {
+            limit = true;
+        }
+
+        return limit;
     }
 }
