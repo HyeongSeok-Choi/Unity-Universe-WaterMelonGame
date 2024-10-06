@@ -5,35 +5,66 @@ using UnityEngine;
 
 public class DeadZone : MonoBehaviour
 {
+
     //완전히 안착했다는 기준을 무엇으로 잡지 ?
     private void OnTriggerStay2D(Collider2D other)
     {
+        
         if (other.transform.IsChildOf(transform))
         {
-            // {
-            // Debug.Log(other.name+"자식");
-            // Debug.Log(Vector2.Distance(other.transform.position,transform.position)+"디스턴스");
-            //}
-            if (this.GetComponent<Collider2D>().bounds.Contains(other.bounds.min) &&
-                this.GetComponent<Collider2D>().bounds.Contains(other.bounds.max))
+            //StartWarningLight();
+            float deadzoneRadius = GetComponent<CircleCollider2D>().bounds.center.x -
+                                   GetComponent<Collider2D>().bounds.min.x;
+          // Debug.Log(deadzoneRadius+"데드존 반지름");
+
+           float plantzoneRadius = other.GetComponent<CircleCollider2D>().bounds.center.x -
+                                   other.GetComponent<Collider2D>().bounds.min.x;
+        //  Debug.Log(plantzoneRadius+"플랜트 반지름");
+           
+           float distace = Vector2.Distance(other.transform.position, transform.position);
+         //  Debug.Log(distace+"거리");
+
+         if (distace > deadzoneRadius - plantzoneRadius && other.GetComponent<Plant>().isArrive)
+         {
+             other.GetComponent<Plant>().OutTime += Time.deltaTime;
+    
+             if (other.GetComponent<Plant>().OutTime > 3f)
+             {
+                 GameManager.Instance.SetGameOver();
+             }
+         }
+         else
             {
-                Debug.Log(other.name + "영역 안 포함");
-            }
-            else
-            {
-                Debug.Log(other.name + "영역 밖");
+                other.GetComponent<Plant>().StayTime += Time.deltaTime;
+                if (other.GetComponent<Plant>().StayTime > 3f)
+                {
+                    other.GetComponent<Plant>().isArrive = true;
+                }  
             }
         }
-
-
+        
     }
 
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.transform.IsChildOf(transform))
-        {
-           // Debug.Log(other.name+"집 나간 자식");
-        }
-    }
+    // private void StartWarningLight()
+    // {
+    //     Color color = GetComponent<SpriteRenderer>().color;
+    //         
+    //     float f = 0f;
+    //     
+    //     while (f < 255f)
+    //     {
+    //         f += 1f;
+    //         color.r = f;
+    //         GetComponent<SpriteRenderer>().color = color;
+    //     }
+    //
+    //     while (f > 0f)
+    //     {
+    //         f -= 1f;
+    //         color.r = f;
+    //         GetComponent<SpriteRenderer>().color = color;
+    //     }
+    //
+    // }
     
 }

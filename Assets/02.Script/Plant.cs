@@ -6,13 +6,42 @@ public class Plant : MonoBehaviour
 {
     
     [SerializeField]private List<GameObject> plants;
-    private GameManager gameManager;
     private Transform deadZone;
     private int plantIndex;
     private bool isFirst;
+    public bool isArrive;
     private int plantScore;
+    private float stayTime;
+    private float outTime;
+
+    public float StayTime
+    {
+        get
+        {
+            return stayTime;
+        }
+        set
+        {
+            stayTime = value;
+        }
+    }
+
+    public float OutTime
+    {
+        get
+        {
+            return outTime;
+        }
+        set
+        {
+            outTime = value;
+        }
+    }
     void Start()
     {
+        outTime = 0f;
+        stayTime = 0f;
+        isArrive = false;
         isFirst = true;
         plantScore = 0;
         //현재 플랜트 인덱스 계산
@@ -32,7 +61,6 @@ public class Plant : MonoBehaviour
                 }
             }
         }    
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
     
     //동시 충돌 이벤트 발생문제
@@ -44,9 +72,15 @@ public class Plant : MonoBehaviour
         {
                 Destroy(other.gameObject);
                 Destroy(gameObject);
-                gameManager.AddScore(plantScore*2);
+                GameManager.Instance.AddScore(plantScore*2);
                 other.gameObject.GetComponent<Plant>().isFirst = false;
                 GameObject mergePlant=  Instantiate(plants[plantIndex + 1], transform.position, quaternion.identity);
+                if (mergePlant.CompareTag("Pluto"))
+                {
+                    Debug.Log("게임 이김");
+                    GameManager.Instance.SetGameOver();
+                }
+
                 mergePlant.transform.parent = GameObject.Find("DeadZone").GetComponent<Transform>();
         }
     }
