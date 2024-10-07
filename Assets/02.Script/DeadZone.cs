@@ -9,25 +9,19 @@ public class DeadZone : MonoBehaviour
     //완전히 안착했다는 기준을 무엇으로 잡지 ?
     private void OnTriggerStay2D(Collider2D other)
     {
-        
         if (other.transform.IsChildOf(transform))
-        {
-            //StartWarningLight();
+        { 
             float deadzoneRadius = GetComponent<CircleCollider2D>().bounds.center.x -
-                                   GetComponent<Collider2D>().bounds.min.x;
-          // Debug.Log(deadzoneRadius+"데드존 반지름");
-
-           float plantzoneRadius = other.GetComponent<CircleCollider2D>().bounds.center.x -
+                                 GetComponent<Collider2D>().bounds.min.x;
+            float plantzoneRadius = other.GetComponent<CircleCollider2D>().bounds.center.x -
                                    other.GetComponent<Collider2D>().bounds.min.x;
-        //  Debug.Log(plantzoneRadius+"플랜트 반지름");
-           
-           float distace = Vector2.Distance(other.transform.position, transform.position);
-         //  Debug.Log(distace+"거리");
+            float distance = Vector2.Distance(other.transform.position, transform.position);
 
-         if (distace > deadzoneRadius - plantzoneRadius && other.GetComponent<Plant>().isArrive)
+         if (distance > deadzoneRadius - plantzoneRadius && other.GetComponent<Plant>())
          {
+             other.GetComponent<Plant>().StayTime = 0f;
              other.GetComponent<Plant>().OutTime += Time.deltaTime;
-    
+             
              if (other.GetComponent<Plant>().OutTime > 3f)
              {
                  GameManager.Instance.SetGameOver();
@@ -36,9 +30,10 @@ public class DeadZone : MonoBehaviour
          else
             {
                 other.GetComponent<Plant>().StayTime += Time.deltaTime;
+                
                 if (other.GetComponent<Plant>().StayTime > 3f)
                 {
-                    other.GetComponent<Plant>().isArrive = true;
+                    other.GetComponent<Plant>().OutTime = 0f;
                 }  
             }
         }

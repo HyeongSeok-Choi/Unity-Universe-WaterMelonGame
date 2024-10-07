@@ -174,7 +174,6 @@ MonoBehaviour:
   - {fileID: 3808923334928580131, guid: 9c4ecf9dc10a86540b55f79d6751e27d, type: 3}
   - {fileID: 7448757371833481508, guid: 90d1d7d8b92054d49aff411a7f025298, type: 3}
   - {fileID: 8299710438448650843, guid: 8ea62d69f7c1b5d45ad70eff1f0bf1c0, type: 3}
-  isArrive: 0
 --- !u!199 &-5284582898219741530
 ParticleSystemRenderer:
   serializedVersion: 6

@@ -1,8 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -13,55 +11,53 @@ public class GameManager : MonoBehaviour
    [SerializeField]private Transform startSpot;
    [SerializeField]private Transform deadSpot;
    [SerializeField]private List<GameObject> plants;
-   [SerializeField]private TextMeshProUGUI scoretext;
+   [SerializeField]private TextMeshProUGUI scoreText;
    [SerializeField]private Image nextPlantImage;
    [SerializeField]private GameObject nextPlant;
    [SerializeField]private Button replayGameBtn;
    [SerializeField]private GameObject gameoverUi;
+   [SerializeField]private int smallPlantShootCount;
+   [SerializeField]private int smallPlantShootLimit;
    
    private static GameManager instance;
-
    private bool isGameEnd;
+   private bool isSpawnPlant;
+   private int randomNum;
 
    public bool IsGameEnd
    {
-       get
-       {
-           return isGameEnd;
-       }
-       set
-       {
-           isGameEnd = value;
-       }
+       get { return isGameEnd; }
+       set { isGameEnd = value; }
+   }
+
+   public bool IsSpawnPlant
+   {
+       get { return isSpawnPlant; }
+       set { isSpawnPlant = value; }
    }
 
    public static GameManager Instance
    {
        get
-       {
+       { 
            if (!instance)
            {
                instance = FindObjectOfType(typeof(GameManager)) as GameManager;
-
                if (instance == null)
                {
                    Debug.Log("no Singleton obj");
                }
-
-           }
-               return instance;
+           } 
+           return instance;
        }
    }
-   
-   
-   private int randomNum;
-
    private void Awake()
    {
+       smallPlantShootCount = 0;
+       smallPlantShootLimit = 8;
        gameoverUi.SetActive(false);
-       
        isGameEnd = false;
-       
+       isSpawnPlant = true;
        replayGameBtn.onClick.AddListener(() =>
        {
            //현재의 씬 다시 불러오기
@@ -71,35 +67,33 @@ public class GameManager : MonoBehaviour
        if (instance == null)
        {
            instance = this;
-           
        }else if (instance != this)
        {
-           Debug.Log("여긴 안오지 ?");
            Destroy(gameObject);
        }
        
        //DontDestroyOnLoad(gameObject);
-       
-       
        randomNum = 0;
-
-       scoretext.text = "0";
-
-       Instantiate(plants[randomNum],startSpot.position, Quaternion.identity).transform.parent = startSpot;
-       
+       scoreText.text = "0";
+       GameObject go = Instantiate(plants[randomNum],startSpot.position, Quaternion.identity);
+       go.transform.parent = startSpot;
+       go.GetComponent<CircleCollider2D>().enabled = false;
        nextPlantImage.sprite = plants[randomNum].GetComponent<SpriteRenderer>().sprite;
-
        GetNextPlant();
    }
 
    public void GetNextPlant()
    {
-       randomNum = Random.Range(0,plants.Count);
+       int maxIndex = plants.Count;
        
+       if (smallPlantShootCount < smallPlantShootLimit)
+       {
+           maxIndex = plants.Count - 2;
+       }
+       
+       randomNum = Random.Range(0, maxIndex);
        GameObject nextPlant = plants[randomNum];
-       
        nextPlantImage.sprite = nextPlant.GetComponent<SpriteRenderer>().sprite;
-
        this.nextPlant = nextPlant;
    }
 
@@ -114,7 +108,7 @@ public class GameManager : MonoBehaviour
 
    public void AddScore(int score)
    {
-       scoretext.text= (int.Parse(scoretext.text)+score).ToString();
+       scoreText.text= string.Format("{0}", score);
    }
 
    public void SetGameOver()
@@ -125,18 +119,20 @@ public class GameManager : MonoBehaviour
    
    IEnumerator WaitForIt()
    {
-       startSpot.GetChild(0).parent = deadSpot;
-       
-       yield return new WaitForSeconds(2.0f);
-       
-       GameObject newPlant = Instantiate(nextPlant, startSpot.position, Quaternion.identity);
-       
-       newPlant.transform.parent = startSpot;
+       if (!isGameEnd)
+       {
+           isSpawnPlant = false;
+           smallPlantShootCount += 1;
+           startSpot.GetChild(0).parent = deadSpot;
+           yield return new WaitForSeconds(2.0f);
+           GameObject newPlant = Instantiate(nextPlant, startSpot.position, Quaternion.identity);
+           isSpawnPlant = true;
+           newPlant.transform.parent = startSpot;
+           newPlant.GetComponent<CircleCollider2D>().enabled = false;
+           newPlant.GetComponent<Rigidbody2D>().isKinematic = true;
+           GetNextPlant();
+       }
 
-       newPlant.GetComponent<Rigidbody2D>().isKinematic = true;
-       
-       GetNextPlant();   
-       
    }
    
 }
