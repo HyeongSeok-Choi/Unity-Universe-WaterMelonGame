@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class DeadZone : MonoBehaviour
 {
-
     //완전히 안착했다는 기준을 무엇으로 잡지 ?
     private void OnTriggerStay2D(Collider2D other)
     {
@@ -24,7 +23,8 @@ public class DeadZone : MonoBehaviour
              
              if (other.GetComponent<Plant>().OutTime > 3f)
              {
-                 GameManager.Instance.SetGameOver();
+                 GameManager.Instance.IsGameWin = false;
+                 GameManager.Instance.SetGameEnd(GameManager.Instance.IsGameWin);
              }
          }
          else
@@ -39,27 +39,4 @@ public class DeadZone : MonoBehaviour
         }
         
     }
-
-    // private void StartWarningLight()
-    // {
-    //     Color color = GetComponent<SpriteRenderer>().color;
-    //         
-    //     float f = 0f;
-    //     
-    //     while (f < 255f)
-    //     {
-    //         f += 1f;
-    //         color.r = f;
-    //         GetComponent<SpriteRenderer>().color = color;
-    //     }
-    //
-    //     while (f > 0f)
-    //     {
-    //         f -= 1f;
-    //         color.r = f;
-    //         GetComponent<SpriteRenderer>().color = color;
-    //     }
-    //
-    // }
-    
 }

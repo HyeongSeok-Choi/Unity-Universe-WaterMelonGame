@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 public class GameManager : MonoBehaviour
 {
    [SerializeField]private Transform startSpot;
-   [SerializeField]private Transform deadSpot;
+   [SerializeField]public Transform deadSpot;
    [SerializeField]private List<GameObject> plants;
    [SerializeField]private TextMeshProUGUI scoreText;
    [SerializeField]private Image nextPlantImage;
@@ -18,16 +18,26 @@ public class GameManager : MonoBehaviour
    [SerializeField]private GameObject gameoverUi;
    [SerializeField]private int smallPlantShootCount;
    [SerializeField]private int smallPlantShootLimit;
+   [SerializeField]private GameObject destroyedParticle;
+   [SerializeField]private TextMeshProUGUI gameEndMessage;
    
    private static GameManager instance;
    private bool isGameEnd;
+   private bool isGameWin;
    private bool isSpawnPlant;
    private int randomNum;
+   private int score;
 
    public bool IsGameEnd
    {
        get { return isGameEnd; }
        set { isGameEnd = value; }
+   }
+
+   public bool IsGameWin
+   {
+       get { return isGameWin; }
+       set { isGameWin = value; }
    }
 
    public bool IsSpawnPlant
@@ -56,6 +66,7 @@ public class GameManager : MonoBehaviour
        smallPlantShootCount = 0;
        smallPlantShootLimit = 8;
        gameoverUi.SetActive(false);
+       isGameWin = false;
        isGameEnd = false;
        isSpawnPlant = true;
        replayGameBtn.onClick.AddListener(() =>
@@ -74,7 +85,8 @@ public class GameManager : MonoBehaviour
        
        //DontDestroyOnLoad(gameObject);
        randomNum = 0;
-       scoreText.text = "0";
+       score = 0;
+       scoreText.text = string.Format("{0}", score);;
        GameObject go = Instantiate(plants[randomNum],startSpot.position, Quaternion.identity);
        go.transform.parent = startSpot;
        go.GetComponent<CircleCollider2D>().enabled = false;
@@ -102,22 +114,35 @@ public class GameManager : MonoBehaviour
    {
        if (!isGameEnd)
        {
-           StartCoroutine(WaitForIt());
+           StartCoroutine(WaitForItNewPlant());
        }
    }
 
    public void AddScore(int score)
    {
-       scoreText.text= string.Format("{0}", score);
+       this.score += score;
+       scoreText.text= string.Format("{0}", this.score);
    }
 
-   public void SetGameOver()
+   public void SetGameEnd(bool isGameWin)
    {
        isGameEnd = true;
+       
+       if (isGameWin)
+       {
+           StartCoroutine(DestroyAllPlants());
+           gameEndMessage.text = "You Win !!";
+       }
+       else
+       {
+           gameEndMessage.text = "Game Over";   
+       }
+       
        gameoverUi.SetActive(true);
    }
    
-   IEnumerator WaitForIt()
+   
+   private IEnumerator WaitForItNewPlant()
    {
        if (!isGameEnd)
        {
@@ -134,5 +159,23 @@ public class GameManager : MonoBehaviour
        }
 
    }
-   
+
+   public void PlayParticle(Vector3 particlePosition)
+   {
+       GameObject particle =Instantiate(destroyedParticle, particlePosition, Quaternion.identity);
+       particle.GetComponent<ParticleSystem>().Play();
+   }
+
+   private IEnumerator DestroyAllPlants()
+   {
+       yield return new WaitForSeconds(0.8f);
+       Transform[] deadzonePlant = deadSpot.transform.GetComponentsInChildren<Transform>();
+       for (int i = 1; i < deadzonePlant.Length-1; i++)
+       {
+           yield return new WaitForSeconds(0.8f);
+           PlayParticle(deadzonePlant[i].position);
+           Destroy(deadzonePlant[i].gameObject);
+       }
+
+   }
 }

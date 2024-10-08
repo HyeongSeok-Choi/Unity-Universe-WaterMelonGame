@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
@@ -7,7 +8,7 @@ public class Plant : MonoBehaviour
     
     [SerializeField]private List<GameObject> plants;
     
-    private Transform deadZone;
+    private GameObject deadZone;
     private int plantIndex;
     private bool isFirst;
     private int plantScore;
@@ -40,11 +41,11 @@ public class Plant : MonoBehaviour
                 
                 if (plantIndex == 0)
                 {
-                    plantScore += 10;
+                    plantScore = 10;
                 }
                 else
                 {
-                    plantScore += plantIndex * 20;
+                    plantScore = plantIndex * 20;
                 }
             }
         }    
@@ -57,19 +58,20 @@ public class Plant : MonoBehaviour
     {
         if (gameObject.CompareTag(other.gameObject.tag)&&isFirst&&!GameManager.Instance.IsGameEnd)
         {
+                GameManager.Instance.PlayParticle(gameObject.transform.position);
+                GameManager.Instance.PlayParticle(other.gameObject.transform.position);
                 Destroy(other.gameObject);
                 Destroy(gameObject);
                 GameManager.Instance.AddScore(plantScore*2);
                 other.gameObject.GetComponent<Plant>().isFirst = false;
                 GameObject mergePlant=  Instantiate(plants[plantIndex + 1], transform.position, quaternion.identity);
+                mergePlant.transform.parent = GameObject.Find("DeadZone").GetComponent<Transform>();
                 
                 if (mergePlant.CompareTag("Pluto"))
                 {
-                    Debug.Log("게임 이김");
-                    GameManager.Instance.SetGameOver();
+                    GameManager.Instance.IsGameWin = true;
+                    GameManager.Instance.SetGameEnd(GameManager.Instance.IsGameWin);
                 }
-                
-                mergePlant.transform.parent = GameObject.Find("DeadZone").GetComponent<Transform>();
         }
     }
 }

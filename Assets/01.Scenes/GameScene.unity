@@ -1433,7 +1433,7 @@ MonoBehaviour:
   - {fileID: 7123671605066711952, guid: 12eb4ee90bf90b84788f4b089a6da311, type: 3}
   - {fileID: 7093944887615057126, guid: 7557647fa56d6d24a85f5fdff8338daf, type: 3}
   - {fileID: 4642285448190315133, guid: bc7757f531ec4ee429840b39f466d3eb, type: 3}
-  - {fileID: 7064785478355989459, guid: f431032016b19c1468ca5d9f9113104a, type: 3}
+  - {fileID: 3997385487481715267, guid: 0a5f5dc3bdd53de419c859a4cd3d1dc4, type: 3}
   scoreText: {fileID: 345363851}
   nextPlantImage: {fileID: 1405903696}
   nextPlant: {fileID: 0}
@@ -1441,6 +1441,8 @@ MonoBehaviour:
   gameoverUi: {fileID: 854241862}
   smallPlantShootCount: 0
   smallPlantShootLimit: 0
+  destroyedParticle: {fileID: 6744098725534274385, guid: c8e1f078b530b764281c6ff4a7825d7e, type: 3}
+  gameEndMessage: {fileID: 1184702884}
 --- !u!4 &1469071624
 Transform:
   m_ObjectHideFlags: 0

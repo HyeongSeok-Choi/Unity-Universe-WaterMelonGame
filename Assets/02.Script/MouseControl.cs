@@ -39,6 +39,7 @@ public class MouseControl : MonoBehaviour
     private void Update()
     {   
         RotateZ+= Time.deltaTime* rotationPower;
+        
         if (startSpot.childCount >= 1)
         {
             startSpot.GetChild(0).transform.eulerAngles= new Vector3(0f, 0f, RotateZ);
@@ -61,18 +62,20 @@ public class MouseControl : MonoBehaviour
             line.enabled = true;
             dragOffset = startPosition - GetMousePos();
                 Vector3 dragPosition = startSpot.position - dragOffset;
+                
                 if (dragOffset.magnitude >= limitDistance)
                 {         
                         dragPosition = (-dragOffset.normalized) * limitDistance + startSpot.position;
-                        //dragPosition.y = (-dragOffset.normalized.y) * limitDistance + startPosition.y;
                 }
-                
+            
                 line.SetPosition(1, dragPosition);
                 float zoomDistance = Vector2.Distance(startPosition, GetMousePos()) * Time.deltaTime;
+                
                 if (nomalCameraSize + limitDistance <= mainCamera.orthographicSize)
                 {
                     zoomDistance = 0f;
                 }
+                
                 mainCamera.orthographicSize += zoomDistance * zoomInSpeed;
         }
     }
@@ -91,10 +94,12 @@ public class MouseControl : MonoBehaviour
                 shootingPlantRigidBody.isKinematic = false;
                 dragOffset = startPosition - GetMousePos();
                 float dragPower = Vector2.Distance(startPosition, GetMousePos());
+                
                 if (dragPower > limitDistance)
                 {
                     dragPower = limitDistance;
                 }
+                
                 Vector3 dir = dragOffset.normalized;
                 shootingPlantRigidBody.AddForce(dir * power * dragPower);
                 GameManager.Instance.SetNewPlant();
@@ -112,12 +117,14 @@ public class MouseControl : MonoBehaviour
     private IEnumerator ResizeCamera()
     {
         bool isSizing = true;
+        
         while (isSizing)
         {
             if (mainCamera.orthographicSize <= nomalCameraSize)
             {
                 isSizing = false;
             }
+            
             mainCamera.orthographicSize -= Vector2.Distance(startPosition, GetMousePos()) * Time.deltaTime*zoomOutSpeed;
             yield return null;
         }
