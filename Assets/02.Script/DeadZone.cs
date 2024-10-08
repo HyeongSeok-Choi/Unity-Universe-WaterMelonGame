@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DeadZone : MonoBehaviour
@@ -15,12 +12,10 @@ public class DeadZone : MonoBehaviour
             float plantzoneRadius = other.GetComponent<CircleCollider2D>().bounds.center.x -
                                    other.GetComponent<Collider2D>().bounds.min.x;
             float distance = Vector2.Distance(other.transform.position, transform.position);
-
-         if (distance > deadzoneRadius - plantzoneRadius && other.GetComponent<Plant>())
+         if (distance -1f > deadzoneRadius - plantzoneRadius && other.GetComponent<Plant>())
          {
              other.GetComponent<Plant>().StayTime = 0f;
              other.GetComponent<Plant>().OutTime += Time.deltaTime;
-             
              if (other.GetComponent<Plant>().OutTime > 3f)
              {
                  GameManager.Instance.IsGameWin = false;
@@ -30,13 +25,11 @@ public class DeadZone : MonoBehaviour
          else
             {
                 other.GetComponent<Plant>().StayTime += Time.deltaTime;
-                
                 if (other.GetComponent<Plant>().StayTime > 3f)
                 {
                     other.GetComponent<Plant>().OutTime = 0f;
                 }  
             }
         }
-        
     }
 }

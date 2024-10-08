@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
 public class Plant : MonoBehaviour
 {
-    
     [SerializeField]private List<GameObject> plants;
     
     private GameObject deadZone;
@@ -38,7 +36,6 @@ public class Plant : MonoBehaviour
             if (gameObject.CompareTag(plants[i].tag))
             {
                 plantIndex = i;
-                
                 if (plantIndex == 0)
                 {
                     plantScore = 10;
@@ -66,7 +63,6 @@ public class Plant : MonoBehaviour
                 other.gameObject.GetComponent<Plant>().isFirst = false;
                 GameObject mergePlant=  Instantiate(plants[plantIndex + 1], transform.position, quaternion.identity);
                 mergePlant.transform.parent = GameObject.Find("DeadZone").GetComponent<Transform>();
-                
                 if (mergePlant.CompareTag("Pluto"))
                 {
                     GameManager.Instance.IsGameWin = true;

@@ -74,15 +74,14 @@ public class GameManager : MonoBehaviour
            //현재의 씬 다시 불러오기
            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
        });
-       
        if (instance == null)
        {
            instance = this;
+           
        }else if (instance != this)
        {
            Destroy(gameObject);
        }
-       
        //DontDestroyOnLoad(gameObject);
        randomNum = 0;
        score = 0;
@@ -97,12 +96,10 @@ public class GameManager : MonoBehaviour
    public void GetNextPlant()
    {
        int maxIndex = plants.Count;
-       
        if (smallPlantShootCount < smallPlantShootLimit)
        {
            maxIndex = plants.Count - 2;
        }
-       
        randomNum = Random.Range(0, maxIndex);
        GameObject nextPlant = plants[randomNum];
        nextPlantImage.sprite = nextPlant.GetComponent<SpriteRenderer>().sprite;
@@ -127,7 +124,6 @@ public class GameManager : MonoBehaviour
    public void SetGameEnd(bool isGameWin)
    {
        isGameEnd = true;
-       
        if (isGameWin)
        {
            StartCoroutine(DestroyAllPlants());
@@ -137,29 +133,9 @@ public class GameManager : MonoBehaviour
        {
            gameEndMessage.text = "Game Over";   
        }
-       
        gameoverUi.SetActive(true);
    }
    
-   
-   private IEnumerator WaitForItNewPlant()
-   {
-       if (!isGameEnd)
-       {
-           isSpawnPlant = false;
-           smallPlantShootCount += 1;
-           startSpot.GetChild(0).parent = deadSpot;
-           yield return new WaitForSeconds(2.0f);
-           GameObject newPlant = Instantiate(nextPlant, startSpot.position, Quaternion.identity);
-           isSpawnPlant = true;
-           newPlant.transform.parent = startSpot;
-           newPlant.GetComponent<CircleCollider2D>().enabled = false;
-           newPlant.GetComponent<Rigidbody2D>().isKinematic = true;
-           GetNextPlant();
-       }
-
-   }
-
    public void PlayParticle(Vector3 particlePosition)
    {
        GameObject particle =Instantiate(destroyedParticle, particlePosition, Quaternion.identity);
@@ -176,6 +152,22 @@ public class GameManager : MonoBehaviour
            PlayParticle(deadzonePlant[i].position);
            Destroy(deadzonePlant[i].gameObject);
        }
-
+   }
+   
+   private IEnumerator WaitForItNewPlant()
+   {
+       if (!isGameEnd)
+       {
+           isSpawnPlant = false;
+           smallPlantShootCount += 1;
+           startSpot.GetChild(0).parent = deadSpot;
+           yield return new WaitForSeconds(2.0f);
+           GameObject newPlant = Instantiate(nextPlant, startSpot.position, Quaternion.identity);
+           isSpawnPlant = true;
+           newPlant.transform.parent = startSpot;
+           newPlant.GetComponent<CircleCollider2D>().enabled = false;
+           newPlant.GetComponent<Rigidbody2D>().isKinematic = true;
+           GetNextPlant();
+       }
    }
 }
