@@ -672,7 +672,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24d479472f083be44ba85e60833ffe8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  line: {fileID: 1622182960}
+  dragLineRenderer: {fileID: 1622182960}
   limitDistance: 20
   power: 100
   rotationPower: 100
@@ -775,8 +775,6 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
-  - component: {fileID: 519420034}
-  - component: {fileID: 519420035}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -858,34 +856,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &519420034
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56666c5a40171f54783dd416a44f42bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EventMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_MaxRayIntersections: 0
---- !u!114 &519420035
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8552428235e1d724eb29e16ad2559292, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &719347152 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1669402162483909294, guid: f1d1091256697d44ab8c833d6389bd50, type: 3}
@@ -1914,6 +1884,10 @@ PrefabInstance:
     - target: {fileID: 2593924773682162775, guid: 2e9caa0bfe5a6e140a6be6fff6dd182a, type: 3}
       propertyPath: m_Radius
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7809040300760997934, guid: 2e9caa0bfe5a6e140a6be6fff6dd182a, type: 3}
+      propertyPath: m_Color.a
+      value: 0.039215688
       objectReference: {fileID: 0}
     - target: {fileID: 7809040300760997934, guid: 2e9caa0bfe5a6e140a6be6fff6dd182a, type: 3}
       propertyPath: m_Color.b

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MouseControl : MonoBehaviour
 {
-    [SerializeField] private LineRenderer line;
+    [SerializeField] private LineRenderer dragLineRenderer;
     [SerializeField] private float limitDistance;
     [SerializeField] private float power;
     [SerializeField] private float rotationPower;
@@ -14,7 +14,7 @@ public class MouseControl : MonoBehaviour
     
     private Transform[] linePoints;
     private Camera mainCamera;
-    private Vector3 startPosition;
+    private Vector3 mouseClickPosition;
     private Vector3 dragOffset;
     private float nomalCameraSize;
     private float RotateZ;
@@ -45,8 +45,8 @@ public class MouseControl : MonoBehaviour
     {
         if (!GameManager.Instance.IsGameEnd && GameManager.Instance.IsSpawnPlant)
         {
-            startPosition = GetMousePos();
-            line.SetPosition(0, startSpot.position);
+            mouseClickPosition = GetMousePos();
+            dragLineRenderer.SetPosition(0, startSpot.position);
         }
     }
 
@@ -54,15 +54,15 @@ public class MouseControl : MonoBehaviour
     {
         if (!GameManager.Instance.IsGameEnd&& GameManager.Instance.IsSpawnPlant)
         {
-                line.enabled = true;
-                dragOffset = startPosition - GetMousePos();
+                dragLineRenderer.enabled = true;
+                dragOffset = mouseClickPosition - GetMousePos();
                 Vector3 dragPosition = startSpot.position - dragOffset;
                 if (dragOffset.magnitude >= limitDistance)
                 {         
                         dragPosition = (-dragOffset.normalized) * limitDistance + startSpot.position;
                 }
-                line.SetPosition(1, dragPosition);
-                float zoomDistance = Vector2.Distance(startPosition, GetMousePos()) * Time.deltaTime;
+                dragLineRenderer.SetPosition(1, dragPosition);
+                float zoomDistance = Vector2.Distance(mouseClickPosition, GetMousePos()) * Time.deltaTime;
                 
                 if (nomalCameraSize + limitDistance <= mainCamera.orthographicSize)
                 {
@@ -77,14 +77,14 @@ public class MouseControl : MonoBehaviour
         if (!GameManager.Instance.IsGameEnd&& GameManager.Instance.IsSpawnPlant)
         {
             StartCoroutine(ResizeCamera());
-            line.enabled = false;
+            dragLineRenderer.enabled = false;
             if (startSpot.childCount >= 1)
             {
                 startSpot.GetChild(0).GetComponent<CircleCollider2D>().enabled = true;
                 shootingPlantRigidBody = startSpot.GetChild(0).GetComponent<Rigidbody2D>();
                 shootingPlantRigidBody.isKinematic = false;
-                dragOffset = startPosition - GetMousePos();
-                float dragPower = Vector2.Distance(startPosition, GetMousePos());
+                dragOffset = mouseClickPosition - GetMousePos();
+                float dragPower = Vector2.Distance(mouseClickPosition, GetMousePos());
                 if (dragPower > limitDistance)
                 {
                     dragPower = limitDistance;
@@ -97,10 +97,9 @@ public class MouseControl : MonoBehaviour
     }
     
     Vector3 GetMousePos(){
-        var mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        // 마우스의 위치값 가져오기
+        Vector3 mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         mousePos.z = 0; 
-        return mousePos; // 마우스 위치값 반환 
+        return mousePos;
     }
     
     private IEnumerator ResizeCamera()
@@ -112,7 +111,7 @@ public class MouseControl : MonoBehaviour
             {
                 isSizing = false;
             }
-            mainCamera.orthographicSize -= Vector2.Distance(startPosition, GetMousePos()) * Time.deltaTime*zoomOutSpeed;
+            mainCamera.orthographicSize -= Vector2.Distance(mouseClickPosition, GetMousePos()) * Time.deltaTime*zoomOutSpeed;
             yield return null;
         }
     }

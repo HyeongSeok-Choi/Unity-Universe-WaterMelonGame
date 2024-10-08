@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 public class GameManager : MonoBehaviour
 {
    [SerializeField]private Transform startSpot;
-   [SerializeField]public Transform deadSpot;
+   [SerializeField]public  Transform deadSpot;
    [SerializeField]private List<GameObject> plants;
    [SerializeField]private TextMeshProUGUI scoreText;
    [SerializeField]private Image nextPlantImage;
@@ -22,11 +22,13 @@ public class GameManager : MonoBehaviour
    [SerializeField]private TextMeshProUGUI gameEndMessage;
    
    private static GameManager instance;
+   
    private bool isGameEnd;
    private bool isGameWin;
    private bool isSpawnPlant;
    private int randomNum;
    private int score;
+   private int plantMaxIndex;
 
    public bool IsGameEnd
    {
@@ -69,6 +71,7 @@ public class GameManager : MonoBehaviour
        isGameWin = false;
        isGameEnd = false;
        isSpawnPlant = true;
+       plantMaxIndex = plants.Count;
        replayGameBtn.onClick.AddListener(() =>
        {
            //현재의 씬 다시 불러오기
@@ -82,7 +85,6 @@ public class GameManager : MonoBehaviour
        {
            Destroy(gameObject);
        }
-       //DontDestroyOnLoad(gameObject);
        randomNum = 0;
        score = 0;
        scoreText.text = string.Format("{0}", score);;
@@ -95,12 +97,11 @@ public class GameManager : MonoBehaviour
 
    public void GetNextPlant()
    {
-       int maxIndex = plants.Count;
        if (smallPlantShootCount < smallPlantShootLimit)
        {
-           maxIndex = plants.Count - 2;
+           plantMaxIndex = plants.Count - 2;
        }
-       randomNum = Random.Range(0, maxIndex);
+       randomNum = Random.Range(0, plantMaxIndex);
        GameObject nextPlant = plants[randomNum];
        nextPlantImage.sprite = nextPlant.GetComponent<SpriteRenderer>().sprite;
        this.nextPlant = nextPlant;
@@ -146,7 +147,7 @@ public class GameManager : MonoBehaviour
    {
        yield return new WaitForSeconds(0.8f);
        Transform[] deadzonePlant = deadSpot.transform.GetComponentsInChildren<Transform>();
-       for (int i = 1; i < deadzonePlant.Length-1; i++)
+       for (int i = 1; i < deadzonePlant.Length; i++)
        {
            yield return new WaitForSeconds(0.8f);
            PlayParticle(deadzonePlant[i].position);
