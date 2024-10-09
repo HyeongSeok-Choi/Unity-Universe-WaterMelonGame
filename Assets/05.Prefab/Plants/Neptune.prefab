@@ -29,8 +29,8 @@ Transform:
   m_GameObject: {fileID: 7448757371833481508}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.85, y: 0.49, z: -0.1}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 0.3}
+  m_LocalPosition: {x: 0, y: 0, z: -0.1}
+  m_LocalScale: {x: 1, y: 1, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -162,7 +162,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   plants:
-  - {fileID: 7466024464291205265, guid: 82afe4fe0c553964f93832ab7e717e83, type: 3}
+  - {fileID: 7123671605066711952, guid: 28cedac2dfeb1d64cb4ed6c474e56a78, type: 3}
   - {fileID: 7123671605066711952, guid: 12eb4ee90bf90b84788f4b089a6da311, type: 3}
   - {fileID: 7093944887615057126, guid: 7557647fa56d6d24a85f5fdff8338daf, type: 3}
   - {fileID: 4642285448190315133, guid: bc7757f531ec4ee429840b39f466d3eb, type: 3}

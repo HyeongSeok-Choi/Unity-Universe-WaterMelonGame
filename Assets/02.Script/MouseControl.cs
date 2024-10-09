@@ -1,18 +1,18 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class MouseControl : MonoBehaviour
+public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndDragHandler
 {
     [SerializeField] private LineRenderer dragLineRenderer;
-    [SerializeField] private float limitDistance;
-    [SerializeField] private float power;
-    [SerializeField] private float rotationPower;
+    [SerializeField] private Transform startZone;
     [SerializeField] private Transform deadZone;
-    [SerializeField] private Transform startSpot;
     [SerializeField] private float zoomInSpeed;
     [SerializeField] private float zoomOutSpeed;
+    [SerializeField] private float limitDistance;
+    [SerializeField] private float shootingPower;
+    [SerializeField] private float rotationPower;
     
-    private Transform[] linePoints;
     private Camera mainCamera;
     private Vector3 mouseClickPosition;
     private Vector3 dragOffset;
@@ -26,62 +26,57 @@ public class MouseControl : MonoBehaviour
         nomalCameraSize = mainCamera.orthographicSize;
     }
 
-    private void Start()
-    {
-        shootingPlantRigidBody = startSpot.GetChild(0).GetComponent<Rigidbody2D>();
-        shootingPlantRigidBody.isKinematic = true;
-    }
-
     private void Update()
     {   
         RotateZ+= Time.deltaTime* rotationPower;
-        if (startSpot.childCount >= 1)
+        if (startZone.childCount >= 1)
         {
-            startSpot.GetChild(0).transform.eulerAngles= new Vector3(0f, 0f, RotateZ);
+            startZone.GetChild(0).transform.eulerAngles= new Vector3(0f, 0f, RotateZ);
         }
     }
     
-    private void OnMouseDown()
+    
+    public void OnBeginDrag(PointerEventData eventData)
     {
         if (!GameManager.Instance.IsGameEnd && GameManager.Instance.IsSpawnPlant)
         {
             mouseClickPosition = GetMousePos();
-            dragLineRenderer.SetPosition(0, startSpot.position);
+            dragLineRenderer.SetPosition(0, startZone.position);
         }
     }
 
-    private void OnMouseDrag()
+    public void OnDrag(PointerEventData eventData)
     {
         if (!GameManager.Instance.IsGameEnd&& GameManager.Instance.IsSpawnPlant)
         {
-                dragLineRenderer.enabled = true;
-                dragOffset = mouseClickPosition - GetMousePos();
-                Vector3 dragPosition = startSpot.position - dragOffset;
-                if (dragOffset.magnitude >= limitDistance)
-                {         
-                        dragPosition = (-dragOffset.normalized) * limitDistance + startSpot.position;
-                }
-                dragLineRenderer.SetPosition(1, dragPosition);
-                float zoomDistance = Vector2.Distance(mouseClickPosition, GetMousePos()) * Time.deltaTime;
+            dragLineRenderer.enabled = true;
+            dragOffset = mouseClickPosition - GetMousePos();
+            Vector3 dragPosition = startZone.position - dragOffset;
+            if (dragOffset.magnitude >= limitDistance)
+            {         
+                dragPosition = (-dragOffset.normalized) * limitDistance + startZone.position;
+            }
+            dragLineRenderer.SetPosition(1, dragPosition);
+            float zoomDistance = dragOffset.magnitude * Time.deltaTime;
                 
-                if (nomalCameraSize + limitDistance <= mainCamera.orthographicSize)
-                {
-                    zoomDistance = 0f;
-                }
-                mainCamera.orthographicSize += zoomDistance * zoomInSpeed;
+            if (nomalCameraSize + limitDistance <= mainCamera.orthographicSize)
+            {
+                zoomDistance = 0f;
+            }
+            Mathf.Lerp(mainCamera.orthographicSize,mainCamera.orthographicSize += zoomDistance,Time.deltaTime/zoomOutSpeed);
         }
     }
-    
-    private void OnMouseUp()
+
+    public void OnEndDrag(PointerEventData eventData)
     {
         if (!GameManager.Instance.IsGameEnd&& GameManager.Instance.IsSpawnPlant)
         {
             StartCoroutine(ResizeCamera());
             dragLineRenderer.enabled = false;
-            if (startSpot.childCount >= 1)
+            if (startZone.childCount >= 1)
             {
-                startSpot.GetChild(0).GetComponent<CircleCollider2D>().enabled = true;
-                shootingPlantRigidBody = startSpot.GetChild(0).GetComponent<Rigidbody2D>();
+                startZone.GetChild(0).GetComponent<CircleCollider2D>().enabled = true;
+                shootingPlantRigidBody = startZone.GetChild(0).GetComponent<Rigidbody2D>();
                 shootingPlantRigidBody.isKinematic = false;
                 dragOffset = mouseClickPosition - GetMousePos();
                 float dragPower = Vector2.Distance(mouseClickPosition, GetMousePos());
@@ -90,18 +85,16 @@ public class MouseControl : MonoBehaviour
                     dragPower = limitDistance;
                 }
                 Vector3 dir = dragOffset.normalized;
-                shootingPlantRigidBody.AddForce(dir * power * dragPower);
+                shootingPlantRigidBody.AddForce(dir * shootingPower * dragPower);
                 GameManager.Instance.SetNewPlant();
             }
         }
     }
-    
     Vector3 GetMousePos(){
         Vector3 mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         mousePos.z = 0; 
         return mousePos;
     }
-    
     private IEnumerator ResizeCamera()
     {
         bool isSizing = true;
@@ -111,7 +104,7 @@ public class MouseControl : MonoBehaviour
             {
                 isSizing = false;
             }
-            mainCamera.orthographicSize -= Vector2.Distance(mouseClickPosition, GetMousePos()) * Time.deltaTime*zoomOutSpeed;
+            Mathf.Lerp(mainCamera.orthographicSize,mainCamera.orthographicSize -= Time.deltaTime*zoomInSpeed,Time.deltaTime/zoomOutSpeed);
             yield return null;
         }
     }

@@ -12,7 +12,7 @@ public class Plant : MonoBehaviour
     private int plantScore;
     private float stayTime;
     private float outTime;
-    private float plantzoneRadius;
+    private float plantRadius;
 
     public float StayTime
     { 
@@ -26,11 +26,18 @@ public class Plant : MonoBehaviour
         set { outTime = value; }
     }
     
-    public float PlantzoneRadius
+    public float PlantRadius
     { 
-        get { return plantzoneRadius; }
-        set { plantzoneRadius = value; }
+        get { return plantRadius; }
+        set { plantRadius = value; }
     }
+    
+    public int PlantScore
+    { 
+        get { return plantScore; }
+        set { plantScore = value; }
+    }
+    
     
     void Start()
     {
@@ -38,8 +45,8 @@ public class Plant : MonoBehaviour
         stayTime = 0f;
         isFirst = true;
         plantScore = 0;
-        plantzoneRadius = GetComponent<CircleCollider2D>().bounds.center.x -
-                          GetComponent<Collider2D>().bounds.min.x;
+        plantRadius = GetComponent<CircleCollider2D>().bounds.center.x -
+                      GetComponent<CircleCollider2D>().bounds.min.x;
         //현재 플랜트 인덱스 계산
         for (int i = 0; i < plants.Count; i++)
         {
@@ -72,7 +79,7 @@ public class Plant : MonoBehaviour
                 GameManager.Instance.AddScore(plantScore*2);
                 other.gameObject.GetComponent<Plant>().isFirst = false;
                 GameObject mergePlant=  Instantiate(plants[plantIndex + 1], transform.position, quaternion.identity);
-                mergePlant.transform.parent = GameManager.Instance.deadSpot.transform;
+                mergePlant.transform.parent = GameManager.Instance.deadZone.transform;
                 if (mergePlant.CompareTag("Pluto"))
                 {
                     GameManager.Instance.IsGameWin = true;
