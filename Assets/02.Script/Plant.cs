@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class Plant : MonoBehaviour
@@ -8,11 +7,11 @@ public class Plant : MonoBehaviour
     
     private GameObject deadZone;
     private int plantIndex;
-    private bool isFirst;
     private int plantScore;
+    private float plantRadius;
     private float stayTime;
     private float outTime;
-    private float plantRadius;
+    private bool isFirst;
 
     public float StayTime
     { 
@@ -29,24 +28,21 @@ public class Plant : MonoBehaviour
     public float PlantRadius
     { 
         get { return plantRadius; }
-        set { plantRadius = value; }
     }
     
     public int PlantScore
     { 
         get { return plantScore; }
-        set { plantScore = value; }
     }
     
-    
-    void Start()
-    {
+    private void Awake()
+    {   
         outTime = 0f;
         stayTime = 0f;
         isFirst = true;
-        plantScore = 0;
         plantRadius = GetComponent<CircleCollider2D>().bounds.center.x -
                       GetComponent<CircleCollider2D>().bounds.min.x;
+        
         //현재 플랜트 인덱스 계산
         for (int i = 0; i < plants.Count; i++)
         {
@@ -72,15 +68,15 @@ public class Plant : MonoBehaviour
     {
         if (gameObject.CompareTag(other.gameObject.tag)&&isFirst&&!GameManager.Instance.IsGameEnd)
         {
-                GameManager.Instance.PlayParticle(gameObject.transform.position);
-                GameManager.Instance.PlayParticle(other.gameObject.transform.position);
-                Destroy(other.gameObject);
                 Destroy(gameObject);
+                GameManager.Instance.PlayParticle(gameObject.transform.position);
+                Destroy(other.gameObject);
+                GameManager.Instance.PlayParticle(other.gameObject.transform.position);
                 GameManager.Instance.AddScore(plantScore*2);
                 other.gameObject.GetComponent<Plant>().isFirst = false;
-                GameObject mergePlant=  Instantiate(plants[plantIndex + 1], transform.position, quaternion.identity);
-                mergePlant.transform.parent = GameManager.Instance.deadZone.transform;
-                if (mergePlant.CompareTag("Pluto"))
+                GameObject mergePlant=  Instantiate(plants[plantIndex + 1], transform.position, Quaternion.identity);
+                mergePlant.transform.parent = GameManager.Instance.DeadZone.transform;
+                if (mergePlant.CompareTag(plants[plants.Count-1].tag))
                 {
                     GameManager.Instance.IsGameWin = true;
                     GameManager.Instance.SetGameEnd(GameManager.Instance.IsGameWin);

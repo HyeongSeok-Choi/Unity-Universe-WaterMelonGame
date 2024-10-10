@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 public class GameManager : MonoBehaviour
 {
    [SerializeField]private Transform startZone;
-   [SerializeField]public  Transform deadZone;
+   [SerializeField]private Transform deadZone;
    [SerializeField]private List<GameObject> plants;
    [SerializeField]private TextMeshProUGUI scoreText;
    [SerializeField]private Image nextPlantImage;
@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
    [SerializeField]private GameObject gameoverUi;
    [SerializeField]private int smallPlantShootCount;
    [SerializeField]private int smallPlantShootLimit;
+   [SerializeField]private float respawnTime;
    [SerializeField]private GameObject destroyedParticle;
    [SerializeField]private TextMeshProUGUI gameEndMessage;
    
@@ -30,10 +31,13 @@ public class GameManager : MonoBehaviour
    private int score;
    private int plantMaxIndex;
 
+   public Transform DeadZone
+   {
+       get { return deadZone; }
+   }
    public bool IsGameEnd
    {
        get { return isGameEnd; }
-       set { isGameEnd = value; }
    }
 
    public bool IsGameWin
@@ -45,7 +49,6 @@ public class GameManager : MonoBehaviour
    public bool IsSpawnPlant
    {
        get { return isSpawnPlant; }
-       set { isSpawnPlant = value; }
    }
 
    public static GameManager Instance
@@ -65,6 +68,7 @@ public class GameManager : MonoBehaviour
    }
    private void Awake()
    {
+       respawnTime = 1.0f;
        smallPlantShootCount = 0;
        smallPlantShootLimit = 8;
        gameoverUi.SetActive(false);
@@ -84,11 +88,10 @@ public class GameManager : MonoBehaviour
        }
        randomNum = 0;
        score = 0;
-       scoreText.text = string.Format("{0}", score);;
+       scoreText.text = string.Format("{0}", score);
        GameObject startPlant = Instantiate(plants[randomNum],startZone.position, Quaternion.identity);
        startPlant.transform.parent = startZone;
        startPlant.GetComponent<Rigidbody2D>().isKinematic = true;
-       nextPlantImage.sprite = plants[randomNum].GetComponent<SpriteRenderer>().sprite;
        GetNextPlant();
    }
 
@@ -162,12 +165,14 @@ public class GameManager : MonoBehaviour
        {
            isSpawnPlant = false;
            smallPlantShootCount += 1;
-           startZone.GetChild(0).parent = deadZone;
-           yield return new WaitForSeconds(1.0f);
+           if (startZone.childCount >= 1)
+           {
+               startZone.GetChild(0).parent = deadZone;
+           }
+           yield return new WaitForSeconds(respawnTime);
            GameObject newPlant = Instantiate(nextPlant, startZone.position, Quaternion.identity);
            isSpawnPlant = true;
            newPlant.transform.parent = startZone;
-           newPlant.GetComponent<CircleCollider2D>().enabled = false;
            newPlant.GetComponent<Rigidbody2D>().isKinematic = true;
            GetNextPlant();
        }

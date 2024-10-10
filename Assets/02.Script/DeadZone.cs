@@ -14,7 +14,7 @@ public class DeadZone : MonoBehaviour
         if (other.transform.IsChildOf(transform) && other.GetComponent<Plant>())
         {
             float plantzoneRadius = other.GetComponent<Plant>().PlantRadius;
-            float distance = Vector2.Distance(other.transform.position, transform.position);
+            float distance = Vector3.Distance(other.transform.position, transform.position);
             
          if (distance > deadzoneRadius - plantzoneRadius)
          {  Debug.Log("밖");

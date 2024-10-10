@@ -6,7 +6,6 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
 {
     [SerializeField] private LineRenderer dragLineRenderer;
     [SerializeField] private Transform startZone;
-    [SerializeField] private Transform deadZone;
     [SerializeField] private float zoomInSpeed;
     [SerializeField] private float zoomOutSpeed;
     [SerializeField] private float limitDistance;
@@ -34,7 +33,6 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
             startZone.GetChild(0).transform.eulerAngles= new Vector3(0f, 0f, RotateZ);
         }
     }
-    
     
     public void OnBeginDrag(PointerEventData eventData)
     {
@@ -79,7 +77,7 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
                 shootingPlantRigidBody = startZone.GetChild(0).GetComponent<Rigidbody2D>();
                 shootingPlantRigidBody.isKinematic = false;
                 dragOffset = mouseClickPosition - GetMousePos();
-                float dragPower = Vector2.Distance(mouseClickPosition, GetMousePos());
+                float dragPower = Vector3.Distance(mouseClickPosition, GetMousePos());
                 if (dragPower > limitDistance)
                 {
                     dragPower = limitDistance;
@@ -90,7 +88,7 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
             }
         }
     }
-    Vector3 GetMousePos(){
+    private Vector3 GetMousePos(){
         Vector3 mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         mousePos.z = 0; 
         return mousePos;
