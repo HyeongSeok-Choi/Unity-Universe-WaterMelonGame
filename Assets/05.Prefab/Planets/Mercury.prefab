@@ -161,7 +161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1e17e4a01596c14d9e88c00462a99fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plants:
+  planets:
   - {fileID: 7123671605066711952, guid: 28cedac2dfeb1d64cb4ed6c474e56a78, type: 3}
   - {fileID: 7123671605066711952}
   - {fileID: 7093944887615057126, guid: 7557647fa56d6d24a85f5fdff8338daf, type: 3}

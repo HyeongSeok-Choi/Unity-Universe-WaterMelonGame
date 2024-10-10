@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3808923334928580131
+--- !u!1 &7064785478355989459
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,40 +8,40 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5748401040338871619}
-  - component: {fileID: 7455172704077930232}
-  - component: {fileID: 4726599512891649083}
-  - component: {fileID: 3896113431700171170}
-  - component: {fileID: 4915211786980940839}
+  - component: {fileID: 3923495265339521284}
+  - component: {fileID: 4290502614973509740}
+  - component: {fileID: 6867200148654626258}
+  - component: {fileID: 6493249137663041167}
+  - component: {fileID: -4990810645251962365}
   m_Layer: 0
-  m_Name: Uranus
-  m_TagString: Uranus
+  m_Name: Jupiter
+  m_TagString: Jupiter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5748401040338871619
+--- !u!4 &3923495265339521284
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3808923334928580131}
+  m_GameObject: {fileID: 7064785478355989459}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.1}
-  m_LocalScale: {x: 0.9, y: 0.9, z: 0.3}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &7455172704077930232
+--- !u!212 &4290502614973509740
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3808923334928580131}
+  m_GameObject: {fileID: 7064785478355989459}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300000, guid: cd033d58ef3f94161819067ff839c97b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0994aa00c05f243328fbf57b618bdfb3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -87,13 +87,13 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!58 &4726599512891649083
+--- !u!58 &6867200148654626258
 CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3808923334928580131}
+  m_GameObject: {fileID: 7064785478355989459}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
@@ -119,17 +119,17 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.16964753}
+  m_Offset: {x: 0, y: -0.22835827}
   serializedVersion: 2
-  m_Radius: 3.688979
---- !u!50 &3896113431700171170
+  m_Radius: 3.6723151
+--- !u!50 &6493249137663041167
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3808923334928580131}
+  m_GameObject: {fileID: 7064785478355989459}
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
@@ -149,26 +149,26 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &4915211786980940839
+--- !u!114 &-4990810645251962365
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3808923334928580131}
+  m_GameObject: {fileID: 7064785478355989459}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1e17e4a01596c14d9e88c00462a99fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plants:
+  planets:
   - {fileID: 7123671605066711952, guid: 28cedac2dfeb1d64cb4ed6c474e56a78, type: 3}
   - {fileID: 7123671605066711952, guid: 12eb4ee90bf90b84788f4b089a6da311, type: 3}
   - {fileID: 7093944887615057126, guid: 7557647fa56d6d24a85f5fdff8338daf, type: 3}
   - {fileID: 4642285448190315133, guid: bc7757f531ec4ee429840b39f466d3eb, type: 3}
   - {fileID: 3997385487481715267, guid: 0a5f5dc3bdd53de419c859a4cd3d1dc4, type: 3}
-  - {fileID: 7064785478355989459, guid: f431032016b19c1468ca5d9f9113104a, type: 3}
+  - {fileID: 7064785478355989459}
   - {fileID: 6126009109658935618, guid: 6fb9108869bc5d843883149cf3cc437f, type: 3}
-  - {fileID: 3808923334928580131}
+  - {fileID: 3808923334928580131, guid: 9c4ecf9dc10a86540b55f79d6751e27d, type: 3}
   - {fileID: 7448757371833481508, guid: 90d1d7d8b92054d49aff411a7f025298, type: 3}
   - {fileID: 8299710438448650843, guid: 8ea62d69f7c1b5d45ad70eff1f0bf1c0, type: 3}

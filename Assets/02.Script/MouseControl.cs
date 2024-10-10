@@ -10,33 +10,22 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
     [SerializeField] private float zoomOutSpeed;
     [SerializeField] private float limitDistance;
     [SerializeField] private float shootingPower;
-    [SerializeField] private float rotationPower;
     
     private Camera mainCamera;
     private Vector3 mouseClickPosition;
-    private Vector3 dragOffset;
+    private Vector3 realDragOffset;
     private float nomalCameraSize;
-    private float RotateZ;
-    private Rigidbody2D shootingPlantRigidBody;
+    private Rigidbody2D shootingPlanetRigidBody;
     
     private void Awake()
     {
         mainCamera = Camera.main;
         nomalCameraSize = mainCamera.orthographicSize;
     }
-
-    private void Update()
-    {   
-        RotateZ+= Time.deltaTime* rotationPower;
-        if (startZone.childCount >= 1)
-        {
-            startZone.GetChild(0).transform.eulerAngles= new Vector3(0f, 0f, RotateZ);
-        }
-    }
     
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (!GameManager.Instance.IsGameEnd && GameManager.Instance.IsSpawnPlant)
+        if (!GameManager.Instance.IsGameEnd && GameManager.Instance.IsSpawnPlanet)
         {
             mouseClickPosition = GetMousePos();
             dragLineRenderer.SetPosition(0, startZone.position);
@@ -45,17 +34,17 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (!GameManager.Instance.IsGameEnd&& GameManager.Instance.IsSpawnPlant)
+        if (!GameManager.Instance.IsGameEnd&& GameManager.Instance.IsSpawnPlanet)
         {
             dragLineRenderer.enabled = true;
-            dragOffset = mouseClickPosition - GetMousePos();
-            Vector3 dragPosition = startZone.position - dragOffset;
-            if (dragOffset.magnitude >= limitDistance)
+            realDragOffset = mouseClickPosition - GetMousePos();
+            Vector3 lineDragPosition = startZone.position - realDragOffset;
+            if (realDragOffset.magnitude >= limitDistance)
             {         
-                dragPosition = (-dragOffset.normalized) * limitDistance + startZone.position;
+                lineDragPosition = (-realDragOffset.normalized) * limitDistance + startZone.position;
             }
-            dragLineRenderer.SetPosition(1, dragPosition);
-            float zoomDistance = dragOffset.magnitude * Time.deltaTime;
+            dragLineRenderer.SetPosition(1, lineDragPosition);
+            float zoomDistance = realDragOffset.magnitude * Time.deltaTime;
                 
             if (nomalCameraSize + limitDistance <= mainCamera.orthographicSize)
             {
@@ -67,24 +56,24 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (!GameManager.Instance.IsGameEnd&& GameManager.Instance.IsSpawnPlant)
+        if (!GameManager.Instance.IsGameEnd&& GameManager.Instance.IsSpawnPlanet)
         {
             StartCoroutine(ResizeCamera());
             dragLineRenderer.enabled = false;
             if (startZone.childCount >= 1)
             {
                 startZone.GetChild(0).GetComponent<CircleCollider2D>().enabled = true;
-                shootingPlantRigidBody = startZone.GetChild(0).GetComponent<Rigidbody2D>();
-                shootingPlantRigidBody.isKinematic = false;
-                dragOffset = mouseClickPosition - GetMousePos();
+                shootingPlanetRigidBody = startZone.GetChild(0).GetComponent<Rigidbody2D>();
+                shootingPlanetRigidBody.isKinematic = false;
+                realDragOffset = mouseClickPosition - GetMousePos();
                 float dragPower = Vector3.Distance(mouseClickPosition, GetMousePos());
                 if (dragPower > limitDistance)
                 {
                     dragPower = limitDistance;
                 }
-                Vector3 dir = dragOffset.normalized;
-                shootingPlantRigidBody.AddForce(dir * shootingPower * dragPower);
-                GameManager.Instance.SetNewPlant();
+                Vector3 dir = realDragOffset.normalized;
+                shootingPlanetRigidBody.AddForce(dir * shootingPower * dragPower);
+                GameManager.Instance.SetNewPlanet();
             }
         }
     }

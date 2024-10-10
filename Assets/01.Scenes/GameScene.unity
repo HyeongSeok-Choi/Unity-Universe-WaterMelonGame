@@ -214,7 +214,7 @@ GameObject:
   - component: {fileID: 43806481}
   - component: {fileID: 43806480}
   m_Layer: 5
-  m_Name: NextPlantLable
+  m_Name: NextPlanetLable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1290,7 +1290,7 @@ GameObject:
   - component: {fileID: 1405903697}
   - component: {fileID: 1405903696}
   m_Layer: 5
-  m_Name: NextPlantImage
+  m_Name: NextPlanetImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1382,24 +1382,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26b1f11e271703d43b7624aaf1e0a442, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startZone: {fileID: 719347152}
-  deadZone: {fileID: 1800798739}
-  plants:
+  planets:
   - {fileID: 7123671605066711952, guid: 28cedac2dfeb1d64cb4ed6c474e56a78, type: 3}
   - {fileID: 7123671605066711952, guid: 12eb4ee90bf90b84788f4b089a6da311, type: 3}
   - {fileID: 7093944887615057126, guid: 7557647fa56d6d24a85f5fdff8338daf, type: 3}
   - {fileID: 4642285448190315133, guid: bc7757f531ec4ee429840b39f466d3eb, type: 3}
   - {fileID: 3997385487481715267, guid: 0a5f5dc3bdd53de419c859a4cd3d1dc4, type: 3}
+  startZone: {fileID: 719347152}
+  deadZone: {fileID: 1800798739}
   scoreText: {fileID: 345363851}
-  nextPlantImage: {fileID: 1405903696}
-  nextPlant: {fileID: 0}
-  replayGameBtn: {fileID: 201074704}
-  gameoverUi: {fileID: 854241862}
-  smallPlantShootCount: 0
-  smallPlantShootLimit: 8
-  respawnTime: 1
-  destroyedParticle: {fileID: 6744098725534274385, guid: c8e1f078b530b764281c6ff4a7825d7e, type: 3}
   gameEndMessage: {fileID: 1184702884}
+  gameoverUi: {fileID: 854241862}
+  nextPlanet: {fileID: 0}
+  nextPlanetImage: {fileID: 1405903696}
+  replayGameBtn: {fileID: 201074704}
+  smallPlanetShootCount: 0
+  smallPlanetShootLimit: 8
+  respawnTime: 1
+  planetDestoryTime: 0.8
+  rotationPower: 100
+  destroyedParticle: {fileID: 6744098725534274385, guid: c8e1f078b530b764281c6ff4a7825d7e, type: 3}
 --- !u!4 &1469071624
 Transform:
   m_ObjectHideFlags: 0
@@ -1561,7 +1563,7 @@ GameObject:
   - component: {fileID: 1789421093}
   - component: {fileID: 1789421092}
   m_Layer: 5
-  m_Name: NextPlantImageLine
+  m_Name: NextPlanetImageLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1687,7 +1689,6 @@ MonoBehaviour:
   zoomOutSpeed: 0.4
   limitDistance: 20
   shootingPower: 200
-  rotationPower: 100
 --- !u!114 &2036064601
 MonoBehaviour:
   m_ObjectHideFlags: 0

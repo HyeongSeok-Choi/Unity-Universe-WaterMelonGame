@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Plant : MonoBehaviour
+public class Planet : MonoBehaviour
 {
-    [SerializeField]private List<GameObject> plants;
+    [SerializeField]private List<GameObject> planets;
     
     private GameObject deadZone;
-    private int plantIndex;
-    private int plantScore;
-    private float plantRadius;
+    private int planetIndex;
+    private int planetScore;
+    private float planetRadius;
     private float stayTime;
     private float outTime;
     private bool isFirst;
@@ -25,14 +25,14 @@ public class Plant : MonoBehaviour
         set { outTime = value; }
     }
     
-    public float PlantRadius
+    public float PlanetRadius
     { 
-        get { return plantRadius; }
+        get { return planetRadius; }
     }
     
-    public int PlantScore
+    public int PlanetScore
     { 
-        get { return plantScore; }
+        get { return planetScore; }
     }
     
     private void Awake()
@@ -40,22 +40,22 @@ public class Plant : MonoBehaviour
         outTime = 0f;
         stayTime = 0f;
         isFirst = true;
-        plantRadius = GetComponent<CircleCollider2D>().bounds.center.x -
+        planetRadius = GetComponent<CircleCollider2D>().bounds.center.x -
                       GetComponent<CircleCollider2D>().bounds.min.x;
         
         //현재 플랜트 인덱스 계산
-        for (int i = 0; i < plants.Count; i++)
+        for (int i = 0; i < planets.Count; i++)
         {
-            if (gameObject.CompareTag(plants[i].tag))
+            if (gameObject.CompareTag(planets[i].tag))
             {
-                plantIndex = i;
-                if (plantIndex == 0)
+                planetIndex = i;
+                if (planetIndex == 0)
                 {
-                    plantScore = 10;
+                    planetScore = 10;
                 }
                 else
                 {
-                    plantScore = plantIndex * 20;
+                    planetScore = planetIndex * 20;
                 }
             }
         }    
@@ -72,11 +72,11 @@ public class Plant : MonoBehaviour
                 GameManager.Instance.PlayParticle(gameObject.transform.position);
                 Destroy(other.gameObject);
                 GameManager.Instance.PlayParticle(other.gameObject.transform.position);
-                GameManager.Instance.AddScore(plantScore*2);
-                other.gameObject.GetComponent<Plant>().isFirst = false;
-                GameObject mergePlant=  Instantiate(plants[plantIndex + 1], transform.position, Quaternion.identity);
-                mergePlant.transform.parent = GameManager.Instance.DeadZone.transform;
-                if (mergePlant.CompareTag(plants[plants.Count-1].tag))
+                GameManager.Instance.AddScore(planetScore*2);
+                other.gameObject.GetComponent<Planet>().isFirst = false;
+                GameObject mergePlanet=  Instantiate(planets[planetIndex + 1], transform.position, Quaternion.identity);
+                mergePlanet.transform.parent = GameManager.Instance.DeadZone.transform;
+                if (mergePlanet.CompareTag(planets[planets.Count-1].tag))
                 {
                     GameManager.Instance.IsGameWin = true;
                     GameManager.Instance.SetGameEnd(GameManager.Instance.IsGameWin);
