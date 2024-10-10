@@ -5,7 +5,6 @@ public class Planet : MonoBehaviour
 {
     [SerializeField]private List<GameObject> planets;
     
-    private GameObject deadZone;
     private int planetIndex;
     private int planetScore;
     private float planetRadius;

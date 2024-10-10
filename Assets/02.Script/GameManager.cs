@@ -38,6 +38,12 @@ public class GameManager : MonoBehaviour
    {
        get { return deadZone; }
    }
+   
+   public Transform StartZone
+   {
+       get { return startZone; }
+   }
+
    public bool IsGameEnd
    {
        get { return isGameEnd; }
@@ -58,14 +64,10 @@ public class GameManager : MonoBehaviour
    {
        get
        { 
-           if (!instance)
+           if (instance == null)
            {
-               instance = FindObjectOfType(typeof(GameManager)) as GameManager;
-               if (instance == null)
-               {
-                   Debug.Log("no Singleton obj");
-               }
-           } 
+               Debug.Log("no Singleton obj");
+           }
            return instance;
        }
    }

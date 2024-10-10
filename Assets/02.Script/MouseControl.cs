@@ -4,12 +4,11 @@ using UnityEngine.EventSystems;
 
 public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndDragHandler
 {
-    [SerializeField] private LineRenderer dragLineRenderer;
-    [SerializeField] private Transform startZone;
-    [SerializeField] private float zoomInSpeed;
-    [SerializeField] private float zoomOutSpeed;
-    [SerializeField] private float limitDistance;
-    [SerializeField] private float shootingPower;
+    [SerializeField]private LineRenderer dragLineRenderer;
+    [SerializeField]private float zoomInSpeed;
+    [SerializeField]private float zoomOutSpeed;
+    [SerializeField]private float limitDistance;
+    [SerializeField]private float shootingPower;
     
     private Camera mainCamera;
     private Vector3 mouseClickPosition;
@@ -28,7 +27,7 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
         if (!GameManager.Instance.IsGameEnd && GameManager.Instance.IsSpawnPlanet)
         {
             mouseClickPosition = GetMousePos();
-            dragLineRenderer.SetPosition(0, startZone.position);
+            dragLineRenderer.SetPosition(0, GameManager.Instance.StartZone.position);
         }
     }
 
@@ -38,10 +37,10 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
         {
             dragLineRenderer.enabled = true;
             realDragOffset = mouseClickPosition - GetMousePos();
-            Vector3 lineDragPosition = startZone.position - realDragOffset;
+            Vector3 lineDragPosition = GameManager.Instance.StartZone.position - realDragOffset;
             if (realDragOffset.magnitude >= limitDistance)
             {         
-                lineDragPosition = (-realDragOffset.normalized) * limitDistance + startZone.position;
+                lineDragPosition = (-realDragOffset.normalized) * limitDistance + GameManager.Instance.StartZone.position;
             }
             dragLineRenderer.SetPosition(1, lineDragPosition);
             float zoomDistance = realDragOffset.magnitude * Time.deltaTime;
@@ -50,7 +49,7 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
             {
                 zoomDistance = 0f;
             }
-            Mathf.Lerp(mainCamera.orthographicSize,mainCamera.orthographicSize += zoomDistance,Time.deltaTime/zoomOutSpeed);
+            Mathf.Lerp(mainCamera.orthographicSize,mainCamera.orthographicSize += zoomDistance,Time.deltaTime*zoomOutSpeed);
         }
     }
 
@@ -60,10 +59,10 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
         {
             StartCoroutine(ResizeCamera());
             dragLineRenderer.enabled = false;
-            if (startZone.childCount >= 1)
+            if (GameManager.Instance.StartZone.childCount >= 1)
             {
-                startZone.GetChild(0).GetComponent<CircleCollider2D>().enabled = true;
-                shootingPlanetRigidBody = startZone.GetChild(0).GetComponent<Rigidbody2D>();
+                GameManager.Instance.StartZone.GetChild(0).GetComponent<CircleCollider2D>().enabled = true;
+                shootingPlanetRigidBody = GameManager.Instance.StartZone.GetChild(0).GetComponent<Rigidbody2D>();
                 shootingPlanetRigidBody.isKinematic = false;
                 realDragOffset = mouseClickPosition - GetMousePos();
                 float dragPower = Vector3.Distance(mouseClickPosition, GetMousePos());
@@ -91,7 +90,7 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
             {
                 isSizing = false;
             }
-            Mathf.Lerp(mainCamera.orthographicSize,mainCamera.orthographicSize -= Time.deltaTime*zoomInSpeed,Time.deltaTime/zoomOutSpeed);
+            Mathf.Lerp(mainCamera.orthographicSize,mainCamera.orthographicSize -= Time.deltaTime*zoomInSpeed,Time.deltaTime*zoomOutSpeed);
             yield return null;
         }
     }
