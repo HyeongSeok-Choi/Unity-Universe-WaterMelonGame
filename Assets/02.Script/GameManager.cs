@@ -18,20 +18,20 @@ public class GameManager : MonoBehaviour
    [SerializeField]private Image nextPlanetImage;
    [SerializeField]private Button replayGameBtn;
    [SerializeField]private int smallPlanetShootCount;
-   [SerializeField]private int smallPlanetShootLimit;
-   [SerializeField]private float respawnTime;
-   [SerializeField]private float planetDestoryTime;
-   [SerializeField]private float rotationPower;
+   [SerializeField]private int smallPlanetShootLimit = 8;
+   [SerializeField]private float respawnTime = 1.0f;
+   [SerializeField]private float planetDestoryTime = 0.8f;
+   [SerializeField]private float rotationPower = 100f;
    [SerializeField]private GameObject destroyedParticle;
 
    private static GameManager instance;
    
    private float RotateZ;
-   private bool isGameEnd;
-   private bool isGameWin;
-   private bool isSpawnPlanet;
-   private int randomNum;
-   private int score;
+   private bool isGameEnd = false;
+   private bool isGameWin = false;
+   private bool isSpawnPlanet = true;
+   private int randomNum = 0;
+   private int score = 0;
    private int planetMaxIndex;
 
    public Transform DeadZone
@@ -73,14 +73,7 @@ public class GameManager : MonoBehaviour
    }
    private void Awake()
    {
-       respawnTime = 1.0f;
-       smallPlanetShootCount = 0;
-       smallPlanetShootLimit = 8;
-       planetDestoryTime = 0.8f;
        gameoverUi.SetActive(false);
-       isGameWin = false;
-       isGameEnd = false;
-       isSpawnPlanet = true;
        planetMaxIndex = planets.Count - 2;
        replayGameBtn.onClick.AddListener(() =>
        {
@@ -92,8 +85,6 @@ public class GameManager : MonoBehaviour
            instance = this;
            
        }
-       randomNum = 0;
-       score = 0;
        scoreText.text = string.Format("{0}", score);
        GameObject startPlanet = Instantiate(planets[randomNum],startZone.position, Quaternion.identity);
        startPlanet.transform.parent = startZone;
@@ -106,7 +97,7 @@ public class GameManager : MonoBehaviour
        RotateZ+= Time.fixedDeltaTime* rotationPower;
        if (startZone.childCount >= 1)
        {
-           startZone.GetChild(0).transform.eulerAngles= new Vector3(0f, 0f, RotateZ);
+           startZone.GetChild(0).rotation = Quaternion.Euler(new Vector3(0f, 0f, RotateZ));
        }
    }
 
@@ -137,7 +128,7 @@ public class GameManager : MonoBehaviour
        scoreText.text= string.Format("{0}", this.score);
    }
 
-   public void SetGameEnd(bool isGameWin)
+   public void SetGameEnd()
    {
        isGameEnd = true;
        if (isGameWin)
@@ -176,8 +167,6 @@ public class GameManager : MonoBehaviour
    
    private IEnumerator WaitForItNewPlanet()
    {
-       if (!isGameEnd)
-       {
            isSpawnPlanet = false;
            smallPlanetShootCount += 1;
            if (startZone.childCount >= 1)
@@ -191,5 +180,4 @@ public class GameManager : MonoBehaviour
            newPlanet.GetComponent<Rigidbody2D>().isKinematic = true;
            GetNextPlanet();
        }
-   }
 }

@@ -41,23 +41,8 @@ public class Planet : MonoBehaviour
         isFirst = true;
         planetRadius = GetComponent<CircleCollider2D>().bounds.center.x -
                       GetComponent<CircleCollider2D>().bounds.min.x;
-        
-        //현재 플랜트 인덱스 계산
-        for (int i = 0; i < planets.Count; i++)
-        {
-            if (gameObject.CompareTag(planets[i].tag))
-            {
-                planetIndex = i;
-                if (planetIndex == 0)
-                {
-                    planetScore = 10;
-                }
-                else
-                {
-                    planetScore = planetIndex * 20;
-                }
-            }
-        }    
+        planetIndex = planets.IndexOf(gameObject);
+        planetScore = (planetIndex + 1) * 20;
     }
     
     //동시 충돌 이벤트 발생문제
@@ -67,18 +52,18 @@ public class Planet : MonoBehaviour
     {
         if (gameObject.CompareTag(other.gameObject.tag)&&isFirst&&!GameManager.Instance.IsGameEnd)
         {
+                other.gameObject.GetComponent<Planet>().isFirst = false;
                 Destroy(gameObject);
                 GameManager.Instance.PlayParticle(gameObject.transform.position);
                 Destroy(other.gameObject);
                 GameManager.Instance.PlayParticle(other.gameObject.transform.position);
                 GameManager.Instance.AddScore(planetScore*2);
-                other.gameObject.GetComponent<Planet>().isFirst = false;
                 GameObject mergePlanet=  Instantiate(planets[planetIndex + 1], transform.position, Quaternion.identity);
                 mergePlanet.transform.parent = GameManager.Instance.DeadZone.transform;
-                if (mergePlanet.CompareTag(planets[planets.Count-1].tag))
+                if (mergePlanet.CompareTag(planets[planets.Count - 1].tag))
                 {
                     GameManager.Instance.IsGameWin = true;
-                    GameManager.Instance.SetGameEnd(GameManager.Instance.IsGameWin);
+                    GameManager.Instance.SetGameEnd();
                 }
         }
     }

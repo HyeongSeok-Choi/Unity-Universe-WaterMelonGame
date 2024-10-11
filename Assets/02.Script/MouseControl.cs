@@ -5,10 +5,10 @@ using UnityEngine.EventSystems;
 public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndDragHandler
 {
     [SerializeField]private LineRenderer dragLineRenderer;
-    [SerializeField]private float zoomInSpeed;
-    [SerializeField]private float zoomOutSpeed;
-    [SerializeField]private float limitDistance;
-    [SerializeField]private float shootingPower;
+    [SerializeField]private float zoomInSpeed = 20f;
+    [SerializeField]private float zoomOutSpeed = 0.4f;
+    [SerializeField]private float limitDistance = 20f;
+    [SerializeField]private float shootingPower = 200f;
     
     private Camera mainCamera;
     private Vector3 mouseClickPosition;
@@ -83,12 +83,11 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
     }
     private IEnumerator ResizeCamera()
     {
-        bool isSizing = true;
-        while (isSizing)
+        while (true)
         {
             if (mainCamera.orthographicSize <= nomalCameraSize)
             {
-                isSizing = false;
+                break;
             }
             Mathf.Lerp(mainCamera.orthographicSize,mainCamera.orthographicSize -= Time.deltaTime*zoomInSpeed,Time.deltaTime*zoomOutSpeed);
             yield return null;
