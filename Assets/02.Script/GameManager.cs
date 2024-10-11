@@ -89,6 +89,7 @@ public class GameManager : MonoBehaviour
        GameObject startPlanet = Instantiate(planets[randomNum],startZone.position, Quaternion.identity);
        startPlanet.transform.parent = startZone;
        startPlanet.GetComponent<Rigidbody2D>().isKinematic = true;
+       startPlanet.GetComponent<CircleCollider2D>().isTrigger = true;
        GetNextPlanet();
    }
    
@@ -178,6 +179,7 @@ public class GameManager : MonoBehaviour
            isSpawnPlanet = true;
            newPlanet.transform.parent = startZone;
            newPlanet.GetComponent<Rigidbody2D>().isKinematic = true;
+           newPlanet.GetComponent<CircleCollider2D>().isTrigger = true;
            GetNextPlanet();
        }
 }

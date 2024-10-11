@@ -57,7 +57,7 @@ public class Planet : MonoBehaviour
                 GameManager.Instance.PlayParticle(gameObject.transform.position);
                 Destroy(other.gameObject);
                 GameManager.Instance.PlayParticle(other.gameObject.transform.position);
-                GameManager.Instance.AddScore(planetScore*2);
+                GameManager.Instance.AddScore(planetScore * 2);
                 GameObject mergePlanet=  Instantiate(planets[planetIndex + 1], transform.position, Quaternion.identity);
                 mergePlanet.transform.parent = GameManager.Instance.DeadZone.transform;
                 if (mergePlanet.CompareTag(planets[planets.Count - 1].tag))

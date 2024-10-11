@@ -64,6 +64,7 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
                 GameManager.Instance.StartZone.GetChild(0).GetComponent<CircleCollider2D>().enabled = true;
                 shootingPlanetRigidBody = GameManager.Instance.StartZone.GetChild(0).GetComponent<Rigidbody2D>();
                 shootingPlanetRigidBody.isKinematic = false;
+                shootingPlanetRigidBody.GetComponent<CircleCollider2D>().isTrigger = false;
                 realDragOffset = mouseClickPosition - GetMousePos();
                 float dragPower = Vector3.Distance(mouseClickPosition, GetMousePos());
                 if (dragPower > limitDistance)
@@ -78,7 +79,7 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
     }
     private Vector3 GetMousePos(){
         Vector3 mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        mousePos.z = 0; 
+        mousePos.z = 0f; 
         return mousePos;
     }
     private IEnumerator ResizeCamera()
