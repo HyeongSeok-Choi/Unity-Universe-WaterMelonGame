@@ -157,12 +157,12 @@ public class GameManager : MonoBehaviour
        //아직까지 완벽한 확인은 힘들지만 예상하기로는 이벤트 함수와 히어라이키 창의 동기화가 되는데 조금의 시간이 필요해서가 아닐지 ?
        yield return new WaitForSeconds(planetDestoryTime);
        Transform[] deadZonePlanet = deadZone.transform.GetComponentsInChildren<Transform>();
-       for (int i = 1; i < deadZonePlanet.Length; i++)
+       for (int childIndex = 1; childIndex < deadZonePlanet.Length; childIndex++)
        {
            yield return new WaitForSeconds(planetDestoryTime);
-           AddScore(deadZonePlanet[i].GetComponent<Planet>().PlanetScore);
-           PlayParticle(deadZonePlanet[i].position);
-           Destroy(deadZonePlanet[i].gameObject);
+           AddScore(deadZonePlanet[childIndex].GetComponent<Planet>().PlanetScore);
+           PlayParticle(deadZonePlanet[childIndex].position);
+           Destroy(deadZonePlanet[childIndex].gameObject);
        }
    }
    

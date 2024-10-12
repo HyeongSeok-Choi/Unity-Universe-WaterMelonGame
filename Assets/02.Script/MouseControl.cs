@@ -5,17 +5,22 @@ using UnityEngine.EventSystems;
 public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndDragHandler
 {
     [SerializeField]private LineRenderer dragLineRenderer;
+    [SerializeField]private LineRenderer predictDragLineRenderer;
     [SerializeField]private float zoomInSpeed = 5f;
     [SerializeField]private float zoomOutSpeed = 5f;
     [SerializeField]private float limitDistance = 20f;
-    [SerializeField]private float shootingPower = 200f;
-    
+    [SerializeField]private float shootingPower = 4;
+    [SerializeField]private float magneticPower = 30f;
+    [SerializeField]private float predictTime = 0.007f;
+    [SerializeField]private int positionCount = 60;
+
     private Camera mainCamera;
+    private float nomalCameraSize;
     private Vector3 mouseClickPosition;
     private Vector3 realDragOffset;
-    private float nomalCameraSize;
     private Rigidbody2D shootingPlanetRigidBody;
-    
+
+
     private void Awake()
     {
         mainCamera = Camera.main;
@@ -44,8 +49,6 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
             }
             dragLineRenderer.SetPosition(1, lineDragPosition);
             
-            float dragPower = Vector3.Distance(mouseClickPosition, GetMousePos());
-
             //선분의 길이에 무조건 비례하게 !!!!
             float zoomDistance;
             zoomDistance = realDragOffset.magnitude;
@@ -60,6 +63,8 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
             
             mainCamera.orthographicSize =
                 Mathf.Lerp(mainCamera.orthographicSize,nomalCameraSize + zoomDistance,Time.deltaTime * zoomOutSpeed);
+            CalculationPredict();
+            
         }
     }
 
@@ -69,20 +74,20 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
         {
             StartCoroutine(ResizeCamera());
             dragLineRenderer.enabled = false;
+            predictDragLineRenderer.enabled = false;
             if (GameManager.Instance.StartZone.childCount >= 1)
             {
-                GameManager.Instance.StartZone.GetChild(0).GetComponent<CircleCollider2D>().enabled = true;
                 shootingPlanetRigidBody = GameManager.Instance.StartZone.GetChild(0).GetComponent<Rigidbody2D>();
                 shootingPlanetRigidBody.isKinematic = false;
                 shootingPlanetRigidBody.GetComponent<CircleCollider2D>().isTrigger = false;
-                realDragOffset = mouseClickPosition - GetMousePos();
-                float dragPower = Vector3.Distance(mouseClickPosition, GetMousePos());
+                realDragOffset = GetMousePos() - mouseClickPosition;
+                float dragPower = realDragOffset.magnitude;
                 if (dragPower > limitDistance)
                 {
                     dragPower = limitDistance;
                 }
                 Vector3 dir = realDragOffset.normalized;
-                shootingPlanetRigidBody.AddForce(dir * shootingPower * dragPower);
+                shootingPlanetRigidBody.velocity = -dir * shootingPower * dragPower;
                 GameManager.Instance.SetNewPlanet();
             }
         }
@@ -103,6 +108,32 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
             mainCamera.orthographicSize =
                 Mathf.Lerp(mainCamera.orthographicSize,mainCamera.orthographicSize - zoomInSpeed,Time.deltaTime * zoomInSpeed);
             yield return null;
+        }
+    }
+
+    private void CalculationPredict()
+    {
+        predictDragLineRenderer.positionCount = positionCount;
+        predictDragLineRenderer.SetPosition(0, GameManager.Instance.StartZone.position);
+        predictDragLineRenderer.enabled = true;
+        
+        float dragPower = realDragOffset.magnitude;
+        if (dragPower > limitDistance)
+        {
+            dragPower = limitDistance;
+        }
+        Vector3 dir = realDragOffset.normalized;
+        Vector3 pVelocity = dir * shootingPower * dragPower;
+        Vector3 pStartPosition = GameManager.Instance.StartZone.position;
+        Vector3 deadZoneDir= GameManager.Instance.DeadZone.position.normalized;
+        for(int predictIndex = 1; predictIndex < predictDragLineRenderer.positionCount ; predictIndex++)
+        {
+            float time = predictIndex * predictTime;
+            Vector3 pos = (Vector2)pStartPosition +(Vector2)pVelocity * time + 0.5f * (Vector2)deadZoneDir * magneticPower  * time * time;
+            pos.z = -1f;
+          
+            predictDragLineRenderer.SetPosition(predictIndex, pos);
+          
         }
     }
 }
