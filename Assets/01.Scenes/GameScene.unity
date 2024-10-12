@@ -1685,8 +1685,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragLineRenderer: {fileID: 952958345}
-  zoomInSpeed: 20
-  zoomOutSpeed: 0.4
+  zoomInSpeed: 5
+  zoomOutSpeed: 5
   limitDistance: 20
   shootingPower: 200
 --- !u!114 &2036064601

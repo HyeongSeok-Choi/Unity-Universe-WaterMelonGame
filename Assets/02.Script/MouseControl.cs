@@ -5,8 +5,8 @@ using UnityEngine.EventSystems;
 public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndDragHandler
 {
     [SerializeField]private LineRenderer dragLineRenderer;
-    [SerializeField]private float zoomInSpeed = 20f;
-    [SerializeField]private float zoomOutSpeed = 0.4f;
+    [SerializeField]private float zoomInSpeed = 5f;
+    [SerializeField]private float zoomOutSpeed = 5f;
     [SerializeField]private float limitDistance = 20f;
     [SerializeField]private float shootingPower = 200f;
     
@@ -43,13 +43,23 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
                 lineDragPosition = (-realDragOffset.normalized) * limitDistance + GameManager.Instance.StartZone.position;
             }
             dragLineRenderer.SetPosition(1, lineDragPosition);
-            float zoomDistance = realDragOffset.magnitude * Time.deltaTime;
-                
-            if (nomalCameraSize + limitDistance <= mainCamera.orthographicSize)
+            
+            float dragPower = Vector3.Distance(mouseClickPosition, GetMousePos());
+
+            //선분의 길이에 무조건 비례하게 !!!!
+            float zoomDistance;
+            zoomDistance = realDragOffset.magnitude;
+
+            if (zoomDistance >= limitDistance)
+            {  
+                zoomDistance = limitDistance;
+            }else if (zoomDistance <= 0)
             {
                 zoomDistance = 0f;
             }
-            Mathf.Lerp(mainCamera.orthographicSize,mainCamera.orthographicSize += zoomDistance,Time.deltaTime*zoomOutSpeed);
+            
+            mainCamera.orthographicSize =
+                Mathf.Lerp(mainCamera.orthographicSize,nomalCameraSize + zoomDistance,Time.deltaTime * zoomOutSpeed);
         }
     }
 
@@ -90,7 +100,8 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
             {
                 break;
             }
-            Mathf.Lerp(mainCamera.orthographicSize,mainCamera.orthographicSize -= Time.deltaTime*zoomInSpeed,Time.deltaTime*zoomOutSpeed);
+            mainCamera.orthographicSize =
+                Mathf.Lerp(mainCamera.orthographicSize,mainCamera.orthographicSize - zoomInSpeed,Time.deltaTime * zoomInSpeed);
             yield return null;
         }
     }
