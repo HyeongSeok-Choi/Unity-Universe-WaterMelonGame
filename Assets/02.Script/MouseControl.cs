@@ -19,8 +19,7 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
     private Vector3 mouseClickPosition;
     private Vector3 realDragOffset;
     private Rigidbody2D shootingPlanetRigidBody;
-
-
+    
     private void Awake()
     {
         mainCamera = Camera.main;
@@ -41,30 +40,25 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
         if (!GameManager.Instance.IsGameEnd&& GameManager.Instance.IsSpawnPlanet)
         {
             dragLineRenderer.enabled = true;
-            realDragOffset = mouseClickPosition - GetMousePos();
-            Vector3 lineDragPosition = GameManager.Instance.StartZone.position - realDragOffset;
+            realDragOffset = GetMousePos() - mouseClickPosition;
+            Vector3 lineDragPosition = GameManager.Instance.StartZone.position + realDragOffset;
             if (realDragOffset.magnitude >= limitDistance)
             {         
-                lineDragPosition = (-realDragOffset.normalized) * limitDistance + GameManager.Instance.StartZone.position;
+                lineDragPosition = (realDragOffset.normalized) * limitDistance + GameManager.Instance.StartZone.position;
             }
             dragLineRenderer.SetPosition(1, lineDragPosition);
-            
             //선분의 길이에 무조건 비례하게 !!!!
-            float zoomDistance;
-            zoomDistance = realDragOffset.magnitude;
-
-            if (zoomDistance >= limitDistance)
+            float zoomDistance = realDragOffset.magnitude;
+            if (zoomDistance > limitDistance)
             {  
                 zoomDistance = limitDistance;
             }else if (zoomDistance <= 0)
             {
                 zoomDistance = 0f;
             }
-            
             mainCamera.orthographicSize =
                 Mathf.Lerp(mainCamera.orthographicSize,nomalCameraSize + zoomDistance,Time.deltaTime * zoomOutSpeed);
             CalculationPredict();
-            
         }
     }
 
@@ -123,13 +117,13 @@ public class MouseControl : MonoBehaviour, IBeginDragHandler, IDragHandler,IEndD
             dragPower = limitDistance;
         }
         Vector3 dir = realDragOffset.normalized;
-        Vector3 pVelocity = dir * shootingPower * dragPower;
+        Vector3 pVelocity = -dir * shootingPower * dragPower;
         Vector3 pStartPosition = GameManager.Instance.StartZone.position;
         Vector3 deadZoneDir= GameManager.Instance.DeadZone.position.normalized;
         for(int predictIndex = 1; predictIndex < predictDragLineRenderer.positionCount ; predictIndex++)
         {
             float time = predictIndex * predictTime;
-            Vector3 pos = (Vector2)pStartPosition +(Vector2)pVelocity * time + 0.5f * (Vector2)deadZoneDir * magneticPower  * time * time;
+            Vector3 pos = pStartPosition + pVelocity * time + 0.5f * deadZoneDir * magneticPower  * time * time;
             pos.z = -1f;
           
             predictDragLineRenderer.SetPosition(predictIndex, pos);

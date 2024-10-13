@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviour
        { 
            if (instance == null)
            {
-               Debug.Log("no Singleton obj");
+               Debug.Log("instance is null");
            }
            return instance;
        }
@@ -83,7 +83,6 @@ public class GameManager : MonoBehaviour
        if (instance == null)
        {
            instance = this;
-           
        }
        scoreText.text = string.Format("{0}", score);
        GameObject startPlanet = Instantiate(planets[randomNum],startZone.position, Quaternion.identity);
@@ -95,9 +94,8 @@ public class GameManager : MonoBehaviour
    
    private void FixedUpdate()
    {   
-       RotateZ+= Time.fixedDeltaTime* rotationPower;
        if (startZone.childCount >= 1)
-       {
+       {   RotateZ+= Time.fixedDeltaTime* rotationPower;
            startZone.GetChild(0).rotation = Quaternion.Euler(new Vector3(0f, 0f, RotateZ));
        }
    }
@@ -154,7 +152,7 @@ public class GameManager : MonoBehaviour
    {
        //planet의 collision 이벤트 함수와의 시점 동기화를 위함
        //Destroy 적용이 되기 전 목록이 뜸
-       //아직까지 완벽한 확인은 힘들지만 예상하기로는 이벤트 함수와 히어라이키 창의 동기화가 되는데 조금의 시간이 필요해서가 아닐지 ?
+       //아직까지 완벽한 확인은 힘들지만 예상하기로는 이벤트 함수와 하이라이키 창의 동기화가 되는데 조금의 시간이 필요해서가 아닐지 ?
        yield return new WaitForSeconds(planetDestoryTime);
        Transform[] deadZonePlanet = deadZone.transform.GetComponentsInChildren<Transform>();
        for (int childIndex = 1; childIndex < deadZonePlanet.Length; childIndex++)
@@ -175,8 +173,8 @@ public class GameManager : MonoBehaviour
                startZone.GetChild(0).parent = deadZone;
            }
            yield return new WaitForSeconds(respawnTime);
-           GameObject newPlanet = Instantiate(nextPlanet, startZone.position, Quaternion.identity);
            isSpawnPlanet = true;
+           GameObject newPlanet = Instantiate(nextPlanet, startZone.position, Quaternion.identity);
            newPlanet.transform.parent = startZone;
            newPlanet.GetComponent<Rigidbody2D>().isKinematic = true;
            newPlanet.GetComponent<CircleCollider2D>().isTrigger = true;
